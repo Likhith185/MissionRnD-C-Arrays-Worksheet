@@ -21,6 +21,67 @@ struct student {
 	int score;
 };
 
+void quick_sort1(struct student *stu, int low, int high)
+{
+	int pivot, j, i;
+	struct student temp;
+	if (low<high)
+	{
+		pivot = low;
+		i = low;
+		j = high;
+
+		while (i<j)
+		{
+			while ((stu[i].score >= stu[pivot].score) && (i<high))
+			{
+				i++;
+			}
+
+			while (stu[j].score < stu[pivot].score)
+			{
+				j--;
+			}
+
+			if (i<j)
+			{
+				temp = stu[i];
+				stu[i] = stu[j];
+				stu[j] = temp;
+			}
+		}
+
+		temp = stu[pivot];
+		stu[pivot] = stu[j];
+		stu[j] = temp;
+		quick_sort1(stu, low, j - 1);
+		quick_sort1(stu, j + 1, high);
+	}
+}
 struct student ** topKStudents(struct student *students, int len, int K) {
-	return NULL;
+	int i = 0, high = 0, a, j;
+	if (students == NULL || len == 0 || K <= 0)
+		return NULL;
+	if (K == 1)
+	{
+		for (i = 0; i < len; i++)
+		{
+			if (students[i].score>high)
+			{
+				high = students[i].score;
+				a = i;
+			}
+		}
+		struct student **topKstud = (struct student **)calloc(K, sizeof(struct student));
+		topKstud[0] = &students[a];
+		return topKstud;
+	}
+	else
+	{
+		struct student **topKstud = (struct student **)calloc(K, sizeof(struct student));
+		quick_sort1(students, 0, len - 1);
+		for (j = 0; j < K; j++)
+			topKstud[j] = &students[j];
+		return topKstud;
+	}
 }
